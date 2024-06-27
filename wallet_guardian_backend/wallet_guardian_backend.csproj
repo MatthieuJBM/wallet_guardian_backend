@@ -26,7 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Contracts\" />
       <Folder Include="Controllers\" />
       <Folder Include="Models\Kategory\" />
       <Folder Include="Models\MonthlyBudgetStatistic\" />
