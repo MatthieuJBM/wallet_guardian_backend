@@ -1,9 +1,41 @@
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using wallet_guardian_backend.Configurations;
+using wallet_guardian_backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// ConnectionString added
+var connectionString = builder.Configuration.GetConnectionString("WalletGuardianDbConnectionString");
+// DBContext added
+builder.Services.AddDbContext<WalletGuardianDbContext>(options => { options.UseMySQL(connectionString); });
+// Controllers added
+builder.Services.AddControllers();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Cors added
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        b => b.AllowAnyHeader()
+            .AllowAnyOrigin()
+            .AllowAnyMethod());
+});
+
+// Serilog added
+builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+
+// AutoMapper added
+builder.Services.AddAutoMapper(typeof(MapperConfig));
+
+// Repositories added
+
 
 var app = builder.Build();
 
