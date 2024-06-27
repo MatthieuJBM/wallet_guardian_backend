@@ -1,0 +1,6 @@
+@wallet_guardian_backend_HostAddress = http://localhost:5009
+
+GET {{wallet_guardian_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

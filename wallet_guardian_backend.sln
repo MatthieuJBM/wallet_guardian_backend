@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wallet_guardian_backend", "wallet_guardian_backend\wallet_guardian_backend.csproj", "{8BDA1D51-33F9-4970-8511-148D1E4B681B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BDA1D51-33F9-4970-8511-148D1E4B681B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BDA1D51-33F9-4970-8511-148D1E4B681B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BDA1D51-33F9-4970-8511-148D1E4B681B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BDA1D51-33F9-4970-8511-148D1E4B681B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
