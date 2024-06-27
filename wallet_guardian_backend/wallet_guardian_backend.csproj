@@ -32,7 +32,6 @@
       <Folder Include="Models\Purchase\" />
       <Folder Include="Models\Shop\" />
       <Folder Include="Models\Subcategory\" />
-      <Folder Include="Repositories\" />
     </ItemGroup>
 
 </Project>

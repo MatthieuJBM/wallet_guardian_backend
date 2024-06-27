@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using wallet_guardian_backend.Configurations;
+using wallet_guardian_backend.Contracts;
 using wallet_guardian_backend.Data;
+using wallet_guardian_backend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +37,13 @@ builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 // Repositories added
-
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+// builder.Services.AddScoped<IRepository, Repository>();
+builder.Services.AddScoped<ISubcategoriesRepository, SubcategoriesRepository>();
+builder.Services.AddScoped<IKategoriesRepository, KategoriesRepository>();
+builder.Services.AddScoped<IShopsRepository, ShopsRepository>();
+builder.Services.AddScoped<IPurchasesRepository, PurchasesRepository>();
+builder.Services.AddScoped<IMonthlyBudgetStatisticsRepository, MonthlyBudgetStatisticsRepository>();
 
 var app = builder.Build();
 
