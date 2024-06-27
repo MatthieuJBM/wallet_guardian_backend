@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using wallet_guardian_backend.Contracts;
 using wallet_guardian_backend.Data;
+using wallet_guardian_backend.Models.Kategory;
 
 namespace wallet_guardian_backend.Controllers
 {
@@ -13,53 +16,64 @@ namespace wallet_guardian_backend.Controllers
     [ApiController]
     public class KategoriesController : ControllerBase
     {
-        private readonly WalletGuardianDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IKategoriesRepository _kategoriesRepository;
 
-        public KategoriesController(WalletGuardianDbContext context)
+
+        public KategoriesController(IMapper mapper, IKategoriesRepository kategoriesRepository)
         {
-            _context = context;
+            _mapper = mapper;
+            _kategoriesRepository = kategoriesRepository;
         }
 
         // GET: api/Kategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Kategory>>> GetKategories()
+        public async Task<ActionResult<IEnumerable<KategoryDto>>> GetKategories()
         {
-            return await _context.Kategories.ToListAsync();
+            var categories = await _kategoriesRepository.GetAllAsync();
+            var records = _mapper.Map<KategoryDto>(categories);
+            return Ok(records);
         }
 
         // GET: api/Kategories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Kategory>> GetKategory(int id)
+        public async Task<ActionResult<KategoryDto>> GetKategory(int id)
         {
-            var kategory = await _context.Kategories.FindAsync(id);
+            var kategory = await _kategoriesRepository.GetAsync(id);
 
             if (kategory == null)
             {
                 return NotFound();
             }
 
-            return kategory;
+            return Ok(_mapper.Map<KategoryDto>(kategory));
         }
 
         // PUT: api/Kategories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutKategory(int id, Kategory kategory)
+        public async Task<IActionResult> PutKategory(int id, KategoryDto kategoryDto)
         {
-            if (id != kategory.Id)
+            if (id != kategoryDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(kategory).State = EntityState.Modified;
+            var kategory = await _kategoriesRepository.GetAsync(id);
+            if (kategory == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(kategoryDto, kategory);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _kategoriesRepository.UpdateAsync(kategory);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!KategoryExists(id))
+                if (!await KategoryExists(id))
                 {
                     return NotFound();
                 }
@@ -75,10 +89,10 @@ namespace wallet_guardian_backend.Controllers
         // POST: api/Kategories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Kategory>> PostKategory(Kategory kategory)
+        public async Task<ActionResult<Kategory>> PostKategory(KategoryDto kategoryDto)
         {
-            _context.Kategories.Add(kategory);
-            await _context.SaveChangesAsync();
+            var kategory = _mapper.Map<Kategory>(kategoryDto);
+            await _kategoriesRepository.AddAsync(kategory);
 
             return CreatedAtAction("GetKategory", new { id = kategory.Id }, kategory);
         }
@@ -87,21 +101,20 @@ namespace wallet_guardian_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteKategory(int id)
         {
-            var kategory = await _context.Kategories.FindAsync(id);
+            var kategory = await _kategoriesRepository.GetAsync(id);
             if (kategory == null)
             {
                 return NotFound();
             }
 
-            _context.Kategories.Remove(kategory);
-            await _context.SaveChangesAsync();
+            await _kategoriesRepository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool KategoryExists(int id)
+        private async Task<bool> KategoryExists(int id)
         {
-            return _context.Kategories.Any(e => e.Id == id);
+            return await _kategoriesRepository.Exists(id);
         }
     }
 }

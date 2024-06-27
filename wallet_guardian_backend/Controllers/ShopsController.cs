@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using wallet_guardian_backend.Contracts;
 using wallet_guardian_backend.Data;
+using wallet_guardian_backend.Models.Shop;
 
 namespace wallet_guardian_backend.Controllers
 {
@@ -13,53 +11,64 @@ namespace wallet_guardian_backend.Controllers
     [ApiController]
     public class ShopsController : ControllerBase
     {
-        private readonly WalletGuardianDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IShopsRepository _shopsRepository;
 
-        public ShopsController(WalletGuardianDbContext context)
+
+        public ShopsController(IMapper mapper, IShopsRepository shopsRepository)
         {
-            _context = context;
+            _mapper = mapper;
+            _shopsRepository = shopsRepository;
         }
 
         // GET: api/Shops
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Shop>>> GetShops()
+        public async Task<ActionResult<IEnumerable<ShopDto>>> GetShops()
         {
-            return await _context.Shops.ToListAsync();
+            var shops = await _shopsRepository.GetAllAsync();
+            var records = _mapper.Map<ShopDto>(shops);
+            return Ok(records);
         }
 
         // GET: api/Shops/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Shop>> GetShop(int id)
+        public async Task<ActionResult<ShopDto>> GetShop(int id)
         {
-            var shop = await _context.Shops.FindAsync(id);
+            var shop = await _shopsRepository.GetAsync(id);
 
             if (shop == null)
             {
                 return NotFound();
             }
 
-            return shop;
+            return Ok(_mapper.Map<ShopDto>(shop));
         }
 
         // PUT: api/Shops/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShop(int id, Shop shop)
+        public async Task<IActionResult> PutShop(int id, ShopDto shopDto)
         {
-            if (id != shop.Id)
+            if (id != shopDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(shop).State = EntityState.Modified;
+            var shop = await _shopsRepository.GetAsync(id);
+            if (shop == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(shopDto, shop);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _shopsRepository.UpdateAsync(shop);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ShopExists(id))
+                if (!await ShopExists(id))
                 {
                     return NotFound();
                 }
@@ -75,10 +84,10 @@ namespace wallet_guardian_backend.Controllers
         // POST: api/Shops
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Shop>> PostShop(Shop shop)
+        public async Task<ActionResult<Shop>> PostShop(ShopDto shopDto)
         {
-            _context.Shops.Add(shop);
-            await _context.SaveChangesAsync();
+            var shop = _mapper.Map<Shop>(shopDto);
+            await _shopsRepository.AddAsync(shop);
 
             return CreatedAtAction("GetShop", new { id = shop.Id }, shop);
         }
@@ -87,21 +96,20 @@ namespace wallet_guardian_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShop(int id)
         {
-            var shop = await _context.Shops.FindAsync(id);
+            var shop = await _shopsRepository.GetAsync(id);
             if (shop == null)
             {
                 return NotFound();
             }
 
-            _context.Shops.Remove(shop);
-            await _context.SaveChangesAsync();
+            await _shopsRepository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool ShopExists(int id)
+        private async Task<bool> ShopExists(int id)
         {
-            return _context.Shops.Any(e => e.Id == id);
+            return await _shopsRepository.Exists(id);
         }
     }
 }

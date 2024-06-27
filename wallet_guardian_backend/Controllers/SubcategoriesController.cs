@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using wallet_guardian_backend.Contracts;
 using wallet_guardian_backend.Data;
+using wallet_guardian_backend.Models.Subcategory;
 
 namespace wallet_guardian_backend.Controllers
 {
@@ -13,53 +11,63 @@ namespace wallet_guardian_backend.Controllers
     [ApiController]
     public class SubcategoriesController : ControllerBase
     {
-        private readonly WalletGuardianDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly ISubcategoriesRepository _subcategoriesRepository;
 
-        public SubcategoriesController(WalletGuardianDbContext context)
+        public SubcategoriesController(IMapper mapper, ISubcategoriesRepository subcategoriesRepository)
         {
-            _context = context;
+            _mapper = mapper;
+            _subcategoriesRepository = subcategoriesRepository;
         }
 
         // GET: api/Subcategories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Subcategory>>> GetSubcategories()
+        public async Task<ActionResult<IEnumerable<SubcategoryDto>>> GetSubcategories()
         {
-            return await _context.Subcategories.ToListAsync();
+            var subcategories = await _subcategoriesRepository.GetAllAsync();
+            var records = _mapper.Map<SubcategoryDto>(subcategories);
+            return Ok(records);
         }
 
         // GET: api/Subcategories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Subcategory>> GetSubcategory(int id)
+        public async Task<ActionResult<SubcategoryDto>> GetSubcategory(int id)
         {
-            var subcategory = await _context.Subcategories.FindAsync(id);
+            var subcategory = _subcategoriesRepository.GetAsync(id);
 
             if (subcategory == null)
             {
                 return NotFound();
             }
 
-            return subcategory;
+            return Ok(_mapper.Map<SubcategoryDto>(subcategory));
         }
 
         // PUT: api/Subcategories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSubcategory(int id, Subcategory subcategory)
+        public async Task<IActionResult> PutSubcategory(int id, SubcategoryDto subcategoryDto)
         {
-            if (id != subcategory.Id)
+            if (id != subcategoryDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(subcategory).State = EntityState.Modified;
+            var subcategory = await _subcategoriesRepository.GetAsync(id);
+            if (subcategory == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(subcategoryDto, subcategory);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _subcategoriesRepository.UpdateAsync(subcategory);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SubcategoryExists(id))
+                if (!await SubcategoryExists(id))
                 {
                     return NotFound();
                 }
@@ -75,10 +83,10 @@ namespace wallet_guardian_backend.Controllers
         // POST: api/Subcategories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Subcategory>> PostSubcategory(Subcategory subcategory)
+        public async Task<ActionResult<Subcategory>> PostSubcategory(SubcategoryDto subcategoryDto)
         {
-            _context.Subcategories.Add(subcategory);
-            await _context.SaveChangesAsync();
+            var subcategory = _mapper.Map<Subcategory>(subcategoryDto);
+            await _subcategoriesRepository.AddAsync(subcategory);
 
             return CreatedAtAction("GetSubcategory", new { id = subcategory.Id }, subcategory);
         }
@@ -87,21 +95,20 @@ namespace wallet_guardian_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSubcategory(int id)
         {
-            var subcategory = await _context.Subcategories.FindAsync(id);
+            var subcategory = await _subcategoriesRepository.GetAsync(id);
             if (subcategory == null)
             {
                 return NotFound();
             }
 
-            _context.Subcategories.Remove(subcategory);
-            await _context.SaveChangesAsync();
+            await _subcategoriesRepository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool SubcategoryExists(int id)
+        private async Task<bool> SubcategoryExists(int id)
         {
-            return _context.Subcategories.Any(e => e.Id == id);
+            return await _subcategoriesRepository.Exists(id);
         }
     }
 }

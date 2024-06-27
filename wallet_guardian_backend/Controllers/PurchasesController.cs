@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using wallet_guardian_backend.Contracts;
 using wallet_guardian_backend.Data;
+using wallet_guardian_backend.Models.Purchase;
 
 namespace wallet_guardian_backend.Controllers
 {
@@ -13,53 +16,63 @@ namespace wallet_guardian_backend.Controllers
     [ApiController]
     public class PurchasesController : ControllerBase
     {
-        private readonly WalletGuardianDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IPurchasesRepository _purchasesRepository;
 
-        public PurchasesController(WalletGuardianDbContext context)
+        public PurchasesController(IMapper mapper, IPurchasesRepository purchasesRepository)
         {
-            _context = context;
+            _mapper = mapper;
+            _purchasesRepository = purchasesRepository;
         }
 
         // GET: api/Purchases
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases()
+        public async Task<ActionResult<IEnumerable<PurchaseDto>>> GetPurchases()
         {
-            return await _context.Purchases.ToListAsync();
+            var purchases = await _purchasesRepository.GetAllAsync();
+            var records = _mapper.Map<PurchaseDto>(purchases);
+            return Ok(records);
         }
 
         // GET: api/Purchases/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Purchase>> GetPurchase(int id)
+        public async Task<ActionResult<PurchaseDto>> GetPurchase(int id)
         {
-            var purchase = await _context.Purchases.FindAsync(id);
+            var purchase = await _purchasesRepository.GetAsync(id);
 
             if (purchase == null)
             {
                 return NotFound();
             }
 
-            return purchase;
+            return Ok(_mapper.Map<PurchaseDto>(purchase));
         }
 
         // PUT: api/Purchases/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPurchase(int id, Purchase purchase)
+        public async Task<IActionResult> PutPurchase(int id, PurchaseDto purchaseDto)
         {
-            if (id != purchase.Id)
+            if (id != purchaseDto.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(purchase).State = EntityState.Modified;
+            var purchase = await _purchasesRepository.GetAsync(id);
+            if (purchase == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(purchaseDto, purchase);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _purchasesRepository.UpdateAsync(purchase);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PurchaseExists(id))
+                if (!await PurchaseExists(id))
                 {
                     return NotFound();
                 }
@@ -75,10 +88,10 @@ namespace wallet_guardian_backend.Controllers
         // POST: api/Purchases
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Purchase>> PostPurchase(Purchase purchase)
+        public async Task<ActionResult<Purchase>> PostPurchase(PurchaseDto purchaseDto)
         {
-            _context.Purchases.Add(purchase);
-            await _context.SaveChangesAsync();
+            var purchase = _mapper.Map<Purchase>(purchaseDto);
+            await _purchasesRepository.AddAsync(purchase);
 
             return CreatedAtAction("GetPurchase", new { id = purchase.Id }, purchase);
         }
@@ -87,21 +100,20 @@ namespace wallet_guardian_backend.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePurchase(int id)
         {
-            var purchase = await _context.Purchases.FindAsync(id);
+            var purchase = await _purchasesRepository.GetAsync(id);
             if (purchase == null)
             {
                 return NotFound();
             }
 
-            _context.Purchases.Remove(purchase);
-            await _context.SaveChangesAsync();
+            await _purchasesRepository.DeleteAsync(id);
 
             return NoContent();
         }
 
-        private bool PurchaseExists(int id)
+        private async Task<bool> PurchaseExists(int id)
         {
-            return _context.Purchases.Any(e => e.Id == id);
+            return await _purchasesRepository.Exists(id);
         }
     }
 }
