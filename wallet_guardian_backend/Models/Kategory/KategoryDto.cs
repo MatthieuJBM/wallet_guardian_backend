@@ -13,5 +13,5 @@ public class KategoryDto
 
     public int Color { get; set; }
 
-    public virtual List<SubcategoryDto> Subcategories { get; set; }
+    public List<SubcategoryDto> Subcategories { get; set; }
 }
