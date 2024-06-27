@@ -25,11 +25,11 @@ namespace wallet_guardian_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
+                    b.Property<long>("Color")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("Icon")
-                        .HasColumnType("int");
+                    b.Property<long>("Icon")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()

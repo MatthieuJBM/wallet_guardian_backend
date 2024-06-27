@@ -256,3 +256,21 @@ System.Collections.Generic.List`1[[wallet_guardian_backend.Data.Shop, wallet_gua
 2024-06-27 21:16:27.777 +02:00 [INF] Hosting environment: Development
 2024-06-27 21:16:27.777 +02:00 [INF] Content root path: /Users/mbaryla/RiderProjects/wallet_guardian_backend/wallet_guardian_backend
 2024-06-27 21:16:32.732 +02:00 [WRN] Failed to determine the https port for redirect.
+2024-06-27 22:20:02.467 +02:00 [INF] Application is shutting down...
+2024-06-27 22:20:09.020 +02:00 [INF] Now listening on: http://localhost:5009
+2024-06-27 22:20:09.134 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-06-27 22:20:09.135 +02:00 [INF] Hosting environment: Development
+2024-06-27 22:20:09.136 +02:00 [INF] Content root path: /Users/mbaryla/RiderProjects/wallet_guardian_backend/wallet_guardian_backend
+2024-06-27 22:21:01.045 +02:00 [WRN] Failed to determine the https port for redirect.
+2024-06-27 22:25:13.196 +02:00 [INF] Application is shutting down...
+2024-06-27 22:25:19.708 +02:00 [INF] Now listening on: http://localhost:5009
+2024-06-27 22:25:20.162 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-06-27 22:25:20.165 +02:00 [INF] Hosting environment: Development
+2024-06-27 22:25:20.165 +02:00 [INF] Content root path: /Users/mbaryla/RiderProjects/wallet_guardian_backend/wallet_guardian_backend
+2024-06-27 22:25:36.854 +02:00 [WRN] Failed to determine the https port for redirect.
+2024-06-27 22:26:44.523 +02:00 [INF] Application is shutting down...
+2024-06-27 22:26:50.791 +02:00 [INF] Now listening on: http://localhost:5009
+2024-06-27 22:26:50.848 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-06-27 22:26:50.848 +02:00 [INF] Hosting environment: Development
+2024-06-27 22:26:50.848 +02:00 [INF] Content root path: /Users/mbaryla/RiderProjects/wallet_guardian_backend/wallet_guardian_backend
+2024-06-27 22:27:09.731 +02:00 [WRN] Failed to determine the https port for redirect.

@@ -10,9 +10,9 @@ public class Kategory
 
     [MaxLength(256)] [Required] public string Name { get; set; }
 
-    public int Icon { get; set; }
+    public long Icon { get; set; }
 
-    public int Color { get; set; }
+    public long Color { get; set; }
 
-    public virtual IList<Subcategory> Subcategories { get; set; }
+    public virtual IList<Subcategory>? Subcategories { get; set; } = new List<Subcategory>();
 }

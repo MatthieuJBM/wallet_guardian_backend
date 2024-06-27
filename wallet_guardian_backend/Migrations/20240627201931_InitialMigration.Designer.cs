@@ -11,7 +11,7 @@ using wallet_guardian_backend.Data;
 namespace wallet_guardian_backend.Migrations
 {
     [DbContext(typeof(WalletGuardianDbContext))]
-    [Migration("20240627171535_InitialMigration")]
+    [Migration("20240627201931_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -28,11 +28,11 @@ namespace wallet_guardian_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("Color")
-                        .HasColumnType("int");
+                    b.Property<long>("Color")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("Icon")
-                        .HasColumnType("int");
+                    b.Property<long>("Icon")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()

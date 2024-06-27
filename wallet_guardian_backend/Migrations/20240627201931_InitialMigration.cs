@@ -26,8 +26,8 @@ namespace wallet_guardian_backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false),
-                    Icon = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<int>(type: "int", nullable: false)
+                    Icon = table.Column<long>(type: "bigint", nullable: false),
+                    Color = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
