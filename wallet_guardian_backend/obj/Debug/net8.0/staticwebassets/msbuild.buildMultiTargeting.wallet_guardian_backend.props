@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/wallet_guardian_backend.props" />
+</Project>

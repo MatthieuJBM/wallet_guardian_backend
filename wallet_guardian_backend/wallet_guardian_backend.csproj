@@ -28,7 +28,11 @@
     <ItemGroup>
       <Folder Include="Contracts\" />
       <Folder Include="Controllers\" />
-      <Folder Include="Models\" />
+      <Folder Include="Models\Kategory\" />
+      <Folder Include="Models\MonthlyBudgetStatistic\" />
+      <Folder Include="Models\Purchase\" />
+      <Folder Include="Models\Shop\" />
+      <Folder Include="Models\Subcategory\" />
       <Folder Include="Repositories\" />
     </ItemGroup>
 

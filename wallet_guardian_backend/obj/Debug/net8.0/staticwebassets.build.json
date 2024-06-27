@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "/RmOG6P46agrb7Z6u1u4+mrR+r6OcBD0lP+8ZEnjVrY=",
+  "Source": "wallet_guardian_backend",
+  "BasePath": "_content/wallet_guardian_backend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
