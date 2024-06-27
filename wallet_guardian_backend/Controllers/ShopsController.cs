@@ -26,7 +26,7 @@ namespace wallet_guardian_backend.Controllers
         public async Task<ActionResult<IEnumerable<ShopDto>>> GetShops()
         {
             var shops = await _shopsRepository.GetAllAsync();
-            var records = _mapper.Map<ShopDto>(shops);
+            var records = _mapper.Map<List<ShopDto>>(shops);
             return Ok(records);
         }
 

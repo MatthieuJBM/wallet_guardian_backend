@@ -10,11 +10,13 @@ namespace wallet_guardian_backend.Configurations;
 
 public class MapperConfig : Profile
 {
-    protected MapperConfig()
+    public MapperConfig()
     {
         // CreateMap<OneType, AnotherType>().ReverseMap();
 
         CreateMap<Subcategory, SubcategoryDto>().ReverseMap();
+        
+        // CreateMap<Subcategory, SubcategoryDto>().ReverseMap().ForMember(dest => dest.Subcategories, opt => opt.MapFrom(src => src.Subcategories));
 
         CreateMap<Kategory, KategoryDto>().ReverseMap();
 

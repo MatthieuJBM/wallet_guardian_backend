@@ -31,7 +31,7 @@ namespace wallet_guardian_backend.Controllers
         public async Task<ActionResult<IEnumerable<KategoryDto>>> GetKategories()
         {
             var categories = await _kategoriesRepository.GetAllAsync();
-            var records = _mapper.Map<KategoryDto>(categories);
+            var records = _mapper.Map<List<KategoryDto>>(categories);
             return Ok(records);
         }
 

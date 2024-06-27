@@ -30,7 +30,7 @@ namespace wallet_guardian_backend.Controllers
         public async Task<ActionResult<IEnumerable<PurchaseDto>>> GetPurchases()
         {
             var purchases = await _purchasesRepository.GetAllAsync();
-            var records = _mapper.Map<PurchaseDto>(purchases);
+            var records = _mapper.Map<List<PurchaseDto>>(purchases);
             return Ok(records);
         }
 

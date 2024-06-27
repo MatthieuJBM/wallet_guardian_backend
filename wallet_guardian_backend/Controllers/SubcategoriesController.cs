@@ -25,7 +25,7 @@ namespace wallet_guardian_backend.Controllers
         public async Task<ActionResult<IEnumerable<SubcategoryDto>>> GetSubcategories()
         {
             var subcategories = await _subcategoriesRepository.GetAllAsync();
-            var records = _mapper.Map<SubcategoryDto>(subcategories);
+            var records = _mapper.Map<List<SubcategoryDto>>(subcategories);
             return Ok(records);
         }
 
