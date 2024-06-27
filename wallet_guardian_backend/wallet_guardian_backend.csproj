@@ -27,11 +27,6 @@
 
     <ItemGroup>
       <Folder Include="Controllers\" />
-      <Folder Include="Models\Kategory\" />
-      <Folder Include="Models\MonthlyBudgetStatistic\" />
-      <Folder Include="Models\Purchase\" />
-      <Folder Include="Models\Shop\" />
-      <Folder Include="Models\Subcategory\" />
     </ItemGroup>
 
 </Project>
